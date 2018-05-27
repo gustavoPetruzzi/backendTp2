@@ -1,0 +1,30 @@
+<?php
+    use \Psr\Http\Message\ServerRequestInterface as Request;
+    use \Psr\Http\Message\ResponseInterface as Response;
+    require 'clases/vendor/autoload.php';
+    require_once 'clases/personaApi.php';
+    
+    $config['displayErrorDetails'] = true;
+    $app = new \Slim\App(["settings" => $config]);
+    
+    $app->add(function($request, $response, $next){
+       $response = $next($request, $response);
+       return $response
+            ->withHeader('Access-Control-Allow-Origin', 'http://localhost:4200')
+            ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    });
+    
+    $app->get('/', function (Request $req,  Response $res, $args = []) {
+        return $res->withStatus(400)->write('Bad Request');
+    });
+
+    $app->get('/lista', \personaApi::class . ':listaPersonasApi');
+
+    $app->group('/personas', function(){
+        $this->get('/lista', \personaApi::class . ':listaPersonasApi');
+        $this->post('/alta', \personaApi::class . ':alta');
+        $this->post('/modificar', \personaApi::class . ':modificar');
+        $this->delete('/borrar/{id}', \personaApi::class . ':borrar');
+    });
+    $app->run();
