@@ -29,15 +29,15 @@
                     $this->fecha = $fecha;
                     $this->hora = $hora;
                     $this->idCliente = $idCliente;
-                    $this->estado = "Solicitado";
+                    $this->estado = "solicitado";
                 }
             }
         
         public function guardarViaje(){
             $objetoAccesoDatos = accesoDatos::DameUnObjetoAcceso();
             $consulta = $objetoAccesoDatos->retornarConsulta(
-                "INSERT INTO viaje (origen_lat, origen_long, destino_lat, destino_long, fecha, hora, idCliente, estado" .
-                "VALUES (:origen_lat, origen_long, destino_lat, destino_long, fecha, hora, idCliente, estado"
+                "INSERT INTO viaje (origen_lat, origen_long, destino_lat, destino_long, fecha, hora, idCliente, estado)" .
+                " VALUES (:origen_lat, :origen_long, :destino_lat, :destino_long, :fecha, :hora, :idCliente, :estado)"
             );
             $consulta->bindValue(":origen_lat", $this->origen_lat, PDO::PARAM_STR);
             $consulta->bindValue(":origen_long", $this->origen_long, PDO::PARAM_STR);
@@ -79,10 +79,112 @@
 
         public function cancelarViaje(){
             $objetoAccesoDatos = accesoDatos::DameUnObjetoAcceso();
+            $this->estado = "cancelado";
             $consulta = $objetoAccesoDatos->retornarConsulta(
                 "UPDATE viaje SET estado = :estado WHERE id = :id"
             );
+            $consulta->bindValue(":estado",$this->estado, PDO::PARAM_STR);
+            $consulta->bindValue(":id",$this->id, PDO::PARAM_INT);
+            $retorno = $consulta->execute();
+            if($retorno && $consulta->rowCount() == 0){
+                $retorno = false;
+            }
+            return $retorno;
             
+        }
+
+        public function asignarViaje($idRemisero){
+            $objetoAccesoDatos = accesoDatos::DameUnObjetoAcceso();
+            $this->estado = "asignado";
+            $this->idRemisero = $idRemisero;
+            $consulta = $objetoAccesoDatos->retornarConsulta(
+                "UPDATE viaje SET estado = :estado, idRemisero = :idRemisero
+                 WHERE id = :id"
+            );
+            $consulta->bindValue(":estado", $this->estado, PDO::PARAM_STR);
+            $consulta->bindValue(":id", $this->id, PDO::PARAM_INT);
+            $consulta->bindValue(":idRemisero", $this->idRemisero, PDO::PARAM_INT);
+            $retorno = $consulta->execute();
+            if($retorno && $consulta->rowCount() == 0){
+                $retorno = false;
+            }
+            return $retorno;
+
+        }
+
+        public function comenzarViaje(){
+            $objetoAccesoDatos = accesoDatos::DameUnObjetoAcceso();
+            $this->estado = "transcurso";
+            $consulta = $objetoAccesoDatos->retornarConsulta(
+                "UPDATE viaje SET estado = :estado
+                 WHERE id = :id"
+            );
+            $consulta->bindValue(":estado",$this->estado, PDO::PARAM_STR);
+            $consulta->bindValue(":id", $this->id, PDO::PARAM_INT);
+            $retorno = $consulta->execute();
+            if($retorno && $consulta->rowCount() == 0){
+                $retorno = false;
+            }
+            return $retorno;
+        }
+
+        public function finalizarViaje($monto){
+            $objetoAccesoDatos = accesoDatos::DameUnObjetoAcceso();
+            $this->estado = "realizado";
+            $consulta = $objetoAccesoDatos->retornarConsulta(
+                "UPDATE viaje SET estado = :estado, monto = :monto
+                 WHERE id = :id"
+            );
+            $consulta->bindValue(":estado",$this->estado, PDO::PARAM_STR);
+            $consulta->bindValue(":id",$this->id, PDO::PARAM_STR);
+            $consulta->bindValue(":monto",$this->monto,PDO::PARAM_STR);
+            $retorno = $consulta->execute();
+            if($retorno && $consulta->rowCount() == 0){
+                $retorno = false;
+            }
+            return $retorno;
+        }
+
+        public static function traerViajes($estado){
+            $listaViajes= array();
+            $objetoAccesoDatos = accesoDatos::DameUnObjetoAcceso();
+            $consulta = $objetoAccesoDatos->retornarConsulta(
+                "SELECT id, estado, origen_lat, origen_long, destino_lat, 
+                        destino_long, fecha, hora, idRemisero, idCliente,
+                        monto
+                 FROM viaje
+                 WHERE estado = :estado"
+            );
+            switch ($estado) {
+                case 'solicitado':
+                    $consulta->bindValue(":estado", $estado, PDO::PARAM_STR);
+                    break;
+                case 'asignado':
+                    $consulta->bindValue(":estado", $estado, PDO::PARAM_STR);
+                    break;
+                default:
+                //no anda
+                    $consulta->bindValue(":estado", '%', PDO::PARAM_STR);
+                    break;
+            }
+            $consulta->execute();
+            $listaViajes = $consulta->fetchAll(PDO::FETCH_CLASS, "viaje");
+            return $listaViajes;
+        }
+
+        public static function traerViaje($id){
+            $objetoAccesoDatos = accesoDatos::DameUnObjetoAcceso();
+            $consulta = $objetoAccesoDatos->retornarConsulta(
+                "SELECT id, estado, origen_lat, origen_long, destino_lat, 
+                        destino_long, fecha, hora, idRemisero, idCliente,
+                        monto
+                 WHERE id = :id"
+            );
+            $consulta->bindValue(":id",$id, PDO::PARAM_INT);
+            $consulta->setFetchMode(PDO::FETCH_CLASS, "remisero");
+            $consulta->execute();
+            $remisero = $consulta->fetch();
+            return $remisero;            
         }
     }
 ?>

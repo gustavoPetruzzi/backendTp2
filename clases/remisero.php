@@ -38,7 +38,7 @@
                     "INSERT INTO remisero (nombre, apellido, usuario, password, vehiculo)" .
                     " VALUES(:nombre, :apellido, :usuario, :password, :vehiculo)"
                 );
-                $consulta->bindValue(":vehiculo", $this->vehiculo, PDO::PARAM_STR);
+                $consulta->bindValue(":vehiculo", $this->vehiculo, PDO::PARAM_INT);
             }
             else{
                 $consulta = $objetoAccesoDatos->retornarConsulta(
@@ -79,7 +79,7 @@
                     "UPDATE remisero SET nombre = :nombre, apellido = :apellido, usuario =:usuario, password = :password, vehiculo = :vehiculo
                     WHERE id =:id"
                 );
-                $consulta->bindValue(":vehiculo", $this->vehiculo, PDO::PARAM_STR);                
+                $consulta->bindValue(":vehiculo", $this->vehiculo, PDO::PARAM_INT);                
             }
             else{
                 $consulta = $objetoAccesoDatos->retornarConsulta(
@@ -107,6 +107,7 @@
                  FROM remisero
                  WHERE id=:id"
             );
+            
         }
         public static function traerRemiseros(){
             $listaRemiseros = array();
@@ -118,6 +119,21 @@
             $consulta->execute();
             $listaRemiseros = $consulta->fetchAll(PDO::FETCH_CLASS, "remisero");
             return $listaRemiseros;
+        }
+
+        public function asignarVehiculo($idVehiculo){
+            $objetoAccesoDatos = accesoDatos::DameUnObjetoAcceso();
+            $consulta = $objetoAccesoDatos->retornarConsulta(
+                "UPDATE remisero SET vehiculo = :vehiculo
+                 WHERE id = :id"
+            );
+            $consulta->bindValue(":vehiculo",$idVehiculo, PDO::PARAM_INT);
+            $consulta->bindValue(":id", $this->id, PDO::PARAM_INT);
+            $retorno = $consulta->execute();
+            if($retorno && $consulta->rowCount() == 0){
+                $retorno = false;
+            }
+            return $retorno;
         }
     }
 ?>

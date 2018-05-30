@@ -3,6 +3,7 @@
     use \Psr\Http\Message\ResponseInterface as Response;
     require 'clases/vendor/autoload.php';
     require_once 'clases/remiseroApi.php';
+    require_once 'clases/viajeApi.php';
     
     $config['displayErrorDetails'] = true;
     $app = new \Slim\App(["settings" => $config]);
@@ -39,5 +40,12 @@
         $this->post('/alta', \remiseroApi::class . ':alta');
         $this->post('/modificar', \remiseroApi::class . ':modificar');
         $this->post('/borrar', \remiseroApi::class . ':borrar');
+    });
+
+    $app->group('/viajes', function(){
+        $this->get('/lista', \viajeApi::class . ':listaViajeApi');
+        $this->post('/alta', \viajeApi::class . ':alta');
+        $this->post('/modificar', \viajeApi::class . ':modificar');
+        $this->post('/cancelar', \viajeApi::class . ':cancelar');
     });
     $app->run();

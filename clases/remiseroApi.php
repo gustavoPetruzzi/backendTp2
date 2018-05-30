@@ -58,8 +58,8 @@
 
         public static function listaRemiseroApi($request, $response, $args){
             
-            $mascotas = remisero::traerRemiseros();  
-            return $response->withJson($mascotas);
+            $remiseros = remisero::traerRemiseros();  
+            return $response->withJson($remiseros);
         }
     }
 
