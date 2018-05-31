@@ -33,7 +33,7 @@
             $objetoAccesoDatos = accesoDatos::DameUnObjetoAcceso();
             $consulta = $objetoAccesoDatos->retornarConsulta(
                 "INSERT INTO cliente (nombre, apellido, usuario, password)" .
-                " VALUES(:nombre, :apellido, :usuario, :password"
+                " VALUES(:nombre, :apellido, :usuario, :password)"
             );
             $consulta->bindValue(":nombre", $this->nombre, PDO::PARAM_STR);
             $consulta->bindValue(":apellido", $this->apellido, PDO::PARAM_STR);

@@ -39,8 +39,8 @@
             }
     	}
     	public function cancelar($request, $response, $args){
-    		$id = $_POST['id'];
-    		$viajeCancelado = viaje::traerViaje($id);
+    		$id = $_POST['idViaje'];
+    		$viajeCancelado = viaje::traerViaje($idViaje);
     		if($viajeCancelado){
     			return $response->withJson($viajeCancelado->cancelarViaje());
     		}
@@ -49,7 +49,7 @@
     		}
     	}
 
-    	public function asignarViaje($request, $response, $args){
+    	public function asignar($request, $response, $args){
     		$idViaje = $_POST['idViaje'];
     		$idRemisero = $_POST['idRemisero'];
     		$viajeAsignado = viaje::traerViaje($idViaje);
@@ -61,7 +61,7 @@
     		}
     	}
 
-    	public function comenzarViaje($request, $response, $args){
+    	public function comenzar($request, $response, $args){
     		$idViaje = $_POST['idViaje'];
     		$viajeComenzado = viaje::traerViaje($idViaje);
     		if($viajeComenzado){
@@ -72,12 +72,12 @@
 			}
 		}
 		
-		public function finalizarViaje($request, $response, $args){
+		public function finalizar($request, $response, $args){
 			$idViaje = $_POST['idViaje'];
 			$monto = $_POST['monto'];
 			$viajeFinalizado = viaje::traerViaje($idViaje);
 			if($viajeFinalizado){
-				return $respones->withJson($viajeFinalizado->finalizarViaje($monto));
+				return $response->withJson($viajeFinalizado->finalizarViaje($monto));
 			}
 			else{
 				return $response->withJson('No existe ningun viaje con ese id', 20);

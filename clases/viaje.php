@@ -137,7 +137,7 @@
             );
             $consulta->bindValue(":estado",$this->estado, PDO::PARAM_STR);
             $consulta->bindValue(":id",$this->id, PDO::PARAM_STR);
-            $consulta->bindValue(":monto",$this->monto,PDO::PARAM_STR);
+            $consulta->bindValue(":monto",$monto,PDO::PARAM_STR);
             $retorno = $consulta->execute();
             if($retorno && $consulta->rowCount() == 0){
                 $retorno = false;
@@ -178,13 +178,14 @@
                 "SELECT id, estado, origen_lat, origen_long, destino_lat, 
                         destino_long, fecha, hora, idRemisero, idCliente,
                         monto
+                 FROM viaje
                  WHERE id = :id"
             );
             $consulta->bindValue(":id",$id, PDO::PARAM_INT);
-            $consulta->setFetchMode(PDO::FETCH_CLASS, "remisero");
+            $consulta->setFetchMode(PDO::FETCH_CLASS, "viaje");
             $consulta->execute();
-            $remisero = $consulta->fetch();
-            return $remisero;            
+            $viaje = $consulta->fetch();
+            return $viaje;            
         }
     }
 ?>

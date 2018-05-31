@@ -47,5 +47,8 @@
         $this->post('/alta', \viajeApi::class . ':alta');
         $this->post('/modificar', \viajeApi::class . ':modificar');
         $this->post('/cancelar', \viajeApi::class . ':cancelar');
+        $this->post('/asignar', \viajeApi::class . ':asignar');
+        $this->post('/comenzar',\viajeApi::class . ':comenzar');
+        $this->post('/finalizar', \viajeApi::class . ':finalizar');
     });
     $app->run();
