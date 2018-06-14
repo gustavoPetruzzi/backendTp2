@@ -4,7 +4,8 @@
     require 'clases/vendor/autoload.php';
     require_once 'clases/remiseroApi.php';
     require_once 'clases/viajeApi.php';
-    
+    require_once 'clases/logueoApi.php';
+    require_once 'clases/verificador.php';
     $config['displayErrorDetails'] = true;
     $app = new \Slim\App(["settings" => $config]);
     
@@ -34,6 +35,10 @@
         return $res->withJson($req);
     });
     
+    $app->group('/remisero', function(){
+        $this->post('/viajes', \remiseroApi::class . ':viajes');
+        $this->post('/finalizar', \viajeApi::class . ':finalizar');
+    });//->add(\verificador::class . ':remisero')->add(\verificador::class . ':token');
 
     $app->group('/remiseros', function(){
         $this->get('/lista', \remiseroApi::class . ':listaRemiseroApi');
@@ -41,7 +46,11 @@
         $this->post('/modificar', \remiseroApi::class . ':modificar');
         $this->post('/borrar', \remiseroApi::class . ':borrar');
     });
-
+    $app->group('/ingreso', function(){
+        $this->get('/token', \logueoApi::class . ':getToken');
+        $this->post('/in', \logueoApi::class . ':login');
+        $this->post('/verificar', \verificador::class, ':token');
+    });
     $app->group('/viajes', function(){
         $this->get('/lista', \viajeApi::class . ':listaViajeApi');
         $this->post('/alta', \viajeApi::class . ':alta');

@@ -145,7 +145,7 @@
             return $retorno;
         }
 
-        public static function traerViajes($estado){
+        public static function traerViajes($estado = false){
             $listaViajes= array();
             $objetoAccesoDatos = accesoDatos::DameUnObjetoAcceso();
             $consulta = $objetoAccesoDatos->retornarConsulta(
@@ -155,22 +155,30 @@
                  FROM viaje
                  WHERE estado = :estado"
             );
-            switch ($estado) {
-                case 'solicitado':
-                    $consulta->bindValue(":estado", $estado, PDO::PARAM_STR);
-                    break;
-                case 'asignado':
-                    $consulta->bindValue(":estado", $estado, PDO::PARAM_STR);
-                    break;
-                default:
-                //no anda
-                    $consulta->bindValue(":estado", '%', PDO::PARAM_STR);
-                    break;
+            if($estado){
+                $consulta = $objetoAccesoDatos->retornarConsulta(
+                    "SELECT id, estado, origen_lat, origen_long, destino_lat, 
+                            destino_long, fecha, hora, idRemisero, idCliente,
+                            monto
+                    FROM viaje
+                    WHERE estado = :estado"
+                );
+                $consulta->bindValue(":estado", $estado, PDO::PARAM_STR);                
             }
+            else{
+                $consulta = $objetoAccesoDatos->retornarConsulta(
+                    "SELECT id, estado, origen_lat, origen_long, destino_lat,
+                            destino_long, fecha, hora, idRemisero, idCliente,
+                            monto
+                    FROM viaje"
+                );
+            }
+
             $consulta->execute();
             $listaViajes = $consulta->fetchAll(PDO::FETCH_CLASS, "viaje");
             return $listaViajes;
         }
+
 
         public static function traerViaje($id){
             $objetoAccesoDatos = accesoDatos::DameUnObjetoAcceso();
@@ -187,5 +195,6 @@
             $viaje = $consulta->fetch();
             return $viaje;            
         }
+        
     }
 ?>

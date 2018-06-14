@@ -31,6 +31,21 @@
             return $remisero;            
         }
 
+        public static function buscarRemisero($usuario, $password){
+            $objetoAccesoDatos = accesoDatos::DameUnObjetoAcceso();
+            $consulta = $objetoAccesoDatos->retornarConsulta(
+                "SELECT id, usuario, password
+                 FROM remisero
+                 WHERE usuario = :usuario AND password = :password"
+            );
+            $consulta->bindValue(":usuario", $usuario, PDO::PARAM_STR);
+            $consulta->bindValue(":password", $password, PDO::PARAM_STR);
+            $consulta->setFetchMode(PDO::FETCH_CLASS, "remisero");
+            $consulta->execute();
+            $remisero = $consulta->fetch();
+            return $remisero;
+        }
+
         public function guardarRemisero(){
             $objetoAccesoDatos = accesoDatos::DameUnObjetoAcceso();
             if(isset($this->vehiculo)){
@@ -58,13 +73,13 @@
             return $retorno;
         }
 
-        public static function borrarRemisero($id){
+        public function borrarRemisero(){
             
             $objetoAccesoDatos = accesoDatos::DameUnObjetoAcceso();
             $consulta = $objetoAccesoDatos->retornarConsulta(
                 "DELETE FROM remisero WHERE id = :id"
             );
-            $consulta->bindValue(":id", $id, PDO::PARAM_INT);
+            $consulta->bindValue(":id", $this->id, PDO::PARAM_INT);
             $retorno = $consulta->execute();
             if($retorno && $consulta->rowCount() == 0){
                 $retorno = false;
@@ -100,15 +115,6 @@
             return $retorno;
         }
 
-        public static function buscarRemisero($id){
-            $objetoAccesoDatos = accesoDatos::DameUnObjetoAcceso();
-            $consulta = $objetoAccesoDatos->retornarConsulta(
-                "SELECT id, nombre, apellido, usuario, password
-                 FROM remisero
-                 WHERE id=:id"
-            );
-            
-        }
         public static function traerRemiseros(){
             $listaRemiseros = array();
             $objetoAccesoDatos = accesoDatos::DameUnObjetoAcceso();

@@ -28,7 +28,21 @@
             $cliente = $consulta->fetch();
             return $cliente;   
         }
-        
+        public static function buscarCliente($usuario, $password){
+            $objetoAccesoDatos = accesoDatos::DameUnObjetoAcceso();
+            $consulta = $objetoAccesoDatos->retornarConsulta(
+                "SELECT id, usuario, password
+                 FROM cliente
+                 WHERE usuario = :usuario AND password = :password"
+            );
+            $consulta->bindValue(":usuario", $usuario, PDO::PARAM_STR);
+            $consulta->bindValue(":password", $password, PDO::PARAM_STR);
+            $consulta->setFetchMode(PDO::FETCH_CLASS, "cliente");
+            $consulta->execute();
+            $cliente = $consulta->fetch();
+            return $cliente;
+        }
+
         public function guardarCliente(){
             $objetoAccesoDatos = accesoDatos::DameUnObjetoAcceso();
             $consulta = $objetoAccesoDatos->retornarConsulta(
@@ -46,7 +60,7 @@
             return $retorno;
         }
 
-        public static function borrarCliente($id){
+        public  function borrarCliente(){
             $objetoAccesoDatos = accesoDatos::DameUnObjetoAcceso();
             $consulta = $objetoAccesoDatos->retornarConsulta(
                 "DELETE FROM cliente WHERE id = :id"
