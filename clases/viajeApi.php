@@ -92,4 +92,31 @@
 			}
 			return $response->withJson($viajes);
 		}
+        public function captcha($request, $response, $args){
+            session_start();
+            $string='';
+
+            for ($i=0; $i < 5; $i++) { 
+                $string .= chr(rand(97,122));
+            }
+
+            $_SESSION['codigo_random'] = $string;
+
+            $dir =  __DIR__ .'/fonts/';
+            $image = imagecreatetruecolor(170, 60);
+            $black = imagecolorallocate($image, 0,0,0);
+            $color = imagecolorallocate($image, 200,100,90);// rojo
+            $white = imagecolorallocate($image, 255,255,255);
+
+            imagefilledrectangle($image, 0,0,399,99, $white);
+            imagettftext($image, 30, 0, 10, 40, $color, $dir.'arial.ttf', $_SESSION['codigo_random']);
+            ob_start();
+            imagepng($image);
+            $data = ob_get_contents();
+            ob_end_clean();
+            $response->getbody()->write($data);
+            $response = $response->withHeader('Content-type', 'image/png');
+
+            return $response;
+        }                
     }

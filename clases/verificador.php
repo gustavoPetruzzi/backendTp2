@@ -6,8 +6,8 @@
 
     class verificador{
         public function token($request, $response, $next){
-            if($request->hasHeader('token')){
-                $token = $request->getHeader('token')[0];
+            if($_POST['token']){
+                $token = $_POST['token'];
                 try{
                     $datos = autentificadorJwt::extraerData($token);
                 }
@@ -68,6 +68,21 @@
                 $retorno['mensaje'] = "No tiene los permisos requeridos";
             }
             return $response->withJson($retorno);
-        }                
+        }
+
+        public static function verificarCaptcha($request, $response, $next){
+            if($_POST['captcha']){
+                if($_POST['captcha'] == $_SESSION['codigo_random']){
+                    return $next($request, $response);
+                }
+                else{
+                    return $response->withJson("capcha erroneo", 511);
+                }
+            }
+            else{
+                return $response->withJson("No se ha enviado captcha", 511);
+            }
+        }
+
     }
 ?>

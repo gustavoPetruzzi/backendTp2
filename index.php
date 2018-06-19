@@ -35,10 +35,15 @@
         return $res->withJson($req);
     });
     
+    $app->group('/cliente', function(){
+        $this->post('/viajeNuevo', \viajeApi::class . ':alta');
+        $this->post('/modificar', \clienteApi::class . ':modificar');
+    })->add(\verificador::class . ':remisero')->add(\verificador::class . ':token');
+
     $app->group('/remisero', function(){
         $this->post('/viajes', \remiseroApi::class . ':viajes');
         $this->post('/finalizar', \viajeApi::class . ':finalizar');
-    });//->add(\verificador::class . ':remisero')->add(\verificador::class . ':token');
+    })->add(\verificador::class . ':remisero')->add(\verificador::class . ':token');
 
     $app->group('/remiseros', function(){
         $this->get('/lista', \remiseroApi::class . ':listaRemiseroApi');
@@ -49,7 +54,7 @@
     $app->group('/ingreso', function(){
         $this->get('/token', \logueoApi::class . ':getToken');
         $this->post('/in', \logueoApi::class . ':login');
-        $this->post('/verificar', \verificador::class, ':token');
+        $this->get('/captcha', \viajeApi::class . ':captcha');
     });
     $app->group('/viajes', function(){
         $this->get('/lista', \viajeApi::class . ':listaViajeApi');
