@@ -38,7 +38,7 @@
     $app->group('/cliente', function(){
         $this->post('/viajeNuevo', \viajeApi::class . ':alta');
         $this->post('/modificar', \clienteApi::class . ':modificar');
-    })->add(\verificador::class . ':remisero')->add(\verificador::class . ':token');
+    })->add(\verificador::class . ':cliente')->add(\verificador::class . ':token');
 
     $app->group('/remisero', function(){
         $this->post('/viajes', \remiseroApi::class . ':viajes');
