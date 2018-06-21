@@ -4,6 +4,7 @@
     require 'clases/vendor/autoload.php';
     require_once 'clases/remiseroApi.php';
     require_once 'clases/viajeApi.php';
+    require_once 'clases/vehiculoApi.php';
     require_once 'clases/logueoApi.php';
     require_once 'clases/verificador.php';
     $config['displayErrorDetails'] = true;
@@ -45,12 +46,19 @@
         $this->post('/finalizar', \viajeApi::class . ':finalizar');
     })->add(\verificador::class . ':remisero')->add(\verificador::class . ':token');
 
+    $app->group('/encargado', function(){
+        $this->post('/viajes', \remiseroApi::class . ':viajes');
+        $this->get('/noasignados', \vehiculoApi::class . ':libres');
+        $this->get('/todos',\vehiculoApi::class .':todos');
+    });
+
     $app->group('/remiseros', function(){
         $this->get('/lista', \remiseroApi::class . ':listaRemiseroApi');
         $this->post('/alta', \remiseroApi::class . ':alta');
         $this->post('/modificar', \remiseroApi::class . ':modificar');
         $this->post('/borrar', \remiseroApi::class . ':borrar');
     });
+
     $app->group('/ingreso', function(){
         $this->get('/token', \logueoApi::class . ':getToken');
         $this->post('/in', \logueoApi::class . ':login');

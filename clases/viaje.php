@@ -13,6 +13,7 @@
         public $idRemisero;
         public $idCliente;
         public $monto;
+        public $premium;
         function __construct(
             $origen_lat = NULL,
             $origen_long = NULL, 
@@ -20,8 +21,9 @@
             $destino_long =NULL,
             $fecha =NULL,
             $hora = NULL,
-            $idCliente = NULL){
-                if($origen_lat != NULL && $origen_long != NULL && $destino_lat != NULL && $destino_long != NULL && $fecha != NULL && $hora != NULL && $idCliente != NULL){
+            $idCliente = NULL,
+            $premium = NULL){
+                if($origen_lat != NULL && $origen_long != NULL && $destino_lat != NULL && $destino_long != NULL && $fecha != NULL && $hora != NULL && $idCliente != NULL && $premium != NULL){
                     $this->origen_lat = $origen_lat;
                     $this->origen_long = $origen_long;
                     $this->destino_lat = $destino_lat;
@@ -30,14 +32,15 @@
                     $this->hora = $hora;
                     $this->idCliente = $idCliente;
                     $this->estado = "solicitado";
+                    $this->premium = $premium;
                 }
             }
         
         public function guardarViaje(){
             $objetoAccesoDatos = accesoDatos::DameUnObjetoAcceso();
             $consulta = $objetoAccesoDatos->retornarConsulta(
-                "INSERT INTO viaje (origen_lat, origen_long, destino_lat, destino_long, fecha, hora, idCliente, estado)" .
-                " VALUES (:origen_lat, :origen_long, :destino_lat, :destino_long, :fecha, :hora, :idCliente, :estado)"
+                "INSERT INTO viaje (origen_lat, origen_long, destino_lat, destino_long, fecha, hora, idCliente, estado, premium)" .
+                " VALUES (:origen_lat, :origen_long, :destino_lat, :destino_long, :fecha, :hora, :idCliente, :estado, :premium)"
             );
             $consulta->bindValue(":origen_lat", $this->origen_lat, PDO::PARAM_STR);
             $consulta->bindValue(":origen_long", $this->origen_long, PDO::PARAM_STR);
@@ -47,14 +50,15 @@
             $consulta->bindValue(":hora", $this->hora, PDO::PARAM_STR);
             $consulta->bindValue(":idCliente", $this->idCliente, PDO::PARAM_INT);
             $consulta->bindValue(":estado", $this->estado, PDO::PARAM_STR);
+            $consulta->bindValue(":premium", $this->premium, PDO::PARAM_INT);
 
             $retorno = $consulta->execute();
             if($retorno && $consulta->rowCount() == 0){
                 $retorno = false;
             }
             return $retorno;
-        }
-
+        }       
+        //AGREGAR TIPO PREMIUM
         public function modificarViaje(){
             $objetoAccesoDatos = accesoDatos::DameUnObjetoAcceso();
             $consulta = $objetoAccesoDatos->retornarConsulta(

@@ -119,7 +119,7 @@
             $listaRemiseros = array();
             $objetoAccesoDatos = accesoDatos::DameUnObjetoAcceso();
             $consulta = $objetoAccesoDatos->retornarConsulta(
-                "SELECT id, nombre, apellido, usuario, password 
+                "SELECT id, nombre, apellido, usuario, password, vehiculo
                  FROM remisero"
             );
             $consulta->execute();

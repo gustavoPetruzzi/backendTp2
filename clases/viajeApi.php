@@ -15,7 +15,8 @@
     			$_POST['destino_long'],
     			$_POST['fecha'],
     			$_POST['hora'],
-    			$_POST['idCliente'] );
+    			$_POST['idCliente'],
+                $_POST['premium'] );
     		return $response->withJson($nuevoViaje->guardarViaje());
     	}
 
