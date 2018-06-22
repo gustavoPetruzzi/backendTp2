@@ -37,12 +37,17 @@
         return $res->withJson($req);
     });
 
-
+        //SP2
     $app->group('/mascotas', function(){
         $this->post('/guardar', \mascotaApi::class . ':alta');
-    });
+    })
+    $app->group('/usuarios', function(){
+        $this->post()
+    })
+    ;
 
 
+        //FIN SP2
 
     
     $app->group('/cliente', function(){

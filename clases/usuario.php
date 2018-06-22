@@ -42,7 +42,7 @@
             $consulta->bindValue(":id", $this->id, PDO::PARAM_INT);
             $consulta->bindValue(":usuario", $this->usuario, PDO::PARAM_STR);
             $consulta->bindValue(":password", $this->password, PDO::PARAM_STR);
-            $consulta->bindValue(":tipo", $this->password, PDO::PARAM_STR);
+            $consulta->bindValue(":tipo", $this->tipo, PDO::PARAM_STR);
             $retorno = $consulta->execute();
             if($retorno && $consulta->rowCount() == 0){
                 $retorno = false;
