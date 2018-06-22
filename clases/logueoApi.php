@@ -2,6 +2,7 @@
 
     require_once 'vendor/autoload.php';
     require_once 'remisero.php';
+    require_once 'cliente.php';
     require_once 'usuario.php';
     require_once 'autentificadorJwt.php';
     use Psr\Http\Message\ServerRequestInterface as Request;
@@ -30,6 +31,21 @@
                 ));
                 return $response->withJson($retorno);
             }
-            return $response->withJson("LA CONCHA DE TU MADRE",405);
+            return $response->withJson("error logueo",405);
+        }
+
+        public function registrar($request, $response, $args){
+            $usuario = $_POST['usuario'];
+            $password= $_POST['password'];
+            $tipo = $_POST['tipo'];
+            if($tipo == 'cliente'){
+                $cliente = new cliente("N", "N", $usuario, $password);
+                if($cliente->guardarCliente()){
+                    $clienteGuardado = cliente::buscarCliente($usuario, $password);
+                    $usuario = new usuario($clienteGuardado->id, $clienteGuardado->usuario, $clienteGuardado->password, 'cliente');
+                    return $response->withJson($usuario->guardarUsuario());
+                }
+
+            }
         }
     }

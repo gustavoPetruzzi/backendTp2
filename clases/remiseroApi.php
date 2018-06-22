@@ -102,6 +102,19 @@
             }
 
         }
+
+        public function asignar($request, $response, $args){
+            $idVehiculo = $_POST['idVehiculo'];
+            //$idRemisero = $_POST['idRemisero'];
+
+            //$remisero = remisero::traerRemisero($idRemisero);
+            //if($remisero){
+                //return $response->withJson($remisero->asignarVehiculo($idVehiculo));
+
+            //}
+            //return $response->withJson("asignar vehiculo error", 405);
+            return $response->withJson($_POST);
+        }
     }
 
 

@@ -2,18 +2,20 @@
     include_once("accesoDatos.php");
 
     class Mascota {
-        public $id;
-        public $nombre;
+        public $nroFicha;
+        public $raza;
+        public $color;
+        public $edad;
         public $tipo;
-        public $fechaNacimiento;
-        public $rutaDeFoto;
+        public $idCliente;
 
-        function __construct($id = NULL, $nombre = NULL, $tipo = NULL, $fechaNacimiento = NULL){
-            if($id != NULL && $nombre != NULL && $tipo != NULL && $fechaNacimiento != NULL){
-                $this->id = $id;
-                $this->nombre = $nombre;
+        function __construct($raza = NULL, $color = NULL, $edad = NULL, $tipo = NULL, $idCliente = NULL){
+            if($raza != NULL && $color != NULL && $edad != NULL && $tipo != NULL && $idCliente != NULL) {
+                $this->raza = $raza;
+                $this->color = $color;
+                $this->edad = $edad;
                 $this->tipo = $tipo;
-                $this->fechaNacimiento = $fechaNacimiento;
+                $this->idCliente = $idCliente;
             }
         }
 
@@ -53,13 +55,14 @@
             
             public  function guardarMascota(){
                 $objetoGuardarDatos = accesoDatos::DameUnObjetoAcceso();
-                $consulta = $objetoGuardarDatos->RetornarConsulta("INSERT INTO mascotas (id, nombre, tipo, fechaNacimiento)"
-                                                                . " VALUES(:id, :nombre, :tipo, :fechaNacimiento)");
-                //$activo = 0;
-                $consulta->bindValue(":id", $this->id, PDO::PARAM_STR);                                                             
-                $consulta->bindValue(":nombre", $this->nombre, PDO::PARAM_STR);                                                             
+                $consulta = $objetoGuardarDatos->RetornarConsulta("INSERT INTO mascotas (raza, color, edad, tipo, idCliente)"
+                                                                . " VALUES(:raza, :color, :edad, :tipo, :idCliente)");
+                //$activo = 0;                                                         
+                $consulta->bindValue(":raza", $this->raza, PDO::PARAM_STR);
+                $consulta->bindValue(":color", $this->color, PDO::PARAM_STR);
+                $consulta->bindValue(":edad", $this->edad, PDO::PARAM_INT);
                 $consulta->bindValue(":tipo", $this->tipo, PDO::PARAM_STR);
-                $consulta->bindValue(":fechaNacimiento",$this->fechaNacimiento, PDO::PARAM_STR);
+                $consulta->bindValue(":idCliente", $this->idCliente, PDO::PARAM_INT);
                 $retorno = $consulta->execute();
                 if($retorno && $consulta->rowCount() == 0){
                     $retorno = false;

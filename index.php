@@ -3,6 +3,7 @@
     use \Psr\Http\Message\ResponseInterface as Response;
     require 'clases/vendor/autoload.php';
     require_once 'clases/remiseroApi.php';
+    require_once 'clases/mascotaApi.php';
     require_once 'clases/viajeApi.php';
     require_once 'clases/vehiculoApi.php';
     require_once 'clases/logueoApi.php';
@@ -35,6 +36,14 @@
     $app->post('/alta', function (Request $req,  Response $res, $args = []) {
         return $res->withJson($req);
     });
+
+
+    $app->group('/mascotas', function(){
+        $this->post('/guardar', \mascotaApi::class . ':alta');
+    });
+
+
+
     
     $app->group('/cliente', function(){
         $this->post('/viajeNuevo', \viajeApi::class . ':alta');
@@ -50,6 +59,7 @@
         $this->post('/viajes', \remiseroApi::class . ':viajes');
         $this->get('/noasignados', \vehiculoApi::class . ':libres');
         $this->get('/todos',\vehiculoApi::class .':todos');
+        $this->post('/asignarvehiculo',\remiseroApi::class .':asignar');
     });
 
     $app->group('/remiseros', function(){
@@ -62,6 +72,7 @@
     $app->group('/ingreso', function(){
         $this->get('/token', \logueoApi::class . ':getToken');
         $this->post('/in', \logueoApi::class . ':login');
+        $this->post('/registro', \logueoApi::class . ':registrar');
         $this->get('/captcha', \viajeApi::class . ':captcha');
     });
     $app->group('/viajes', function(){
